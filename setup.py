@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='pydoc_renderer',
     version='0.1',
-    packages=['example', 'doc_renderer'],
+    packages=['doc_renderer'],
     url='',
     license='',
     author='Arsenii Lisunov',
