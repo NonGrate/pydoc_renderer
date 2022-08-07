@@ -124,6 +124,13 @@ class DocRenderer:
                 }
             }
 
+        if text_style.font_family is not None:
+            print(f"[{self.current_request()}] Setting the [{text_style.background_color}] color to the [{tag}] text")
+            fields.append("weightedFontFamily")
+            style["weightedFontFamily"] = {
+                "fontFamily": text_style.font_family,
+            }
+
         self.unprocessed_requests.append({
             "updateTextStyle": {
                 "range": {
@@ -213,7 +220,6 @@ class DocRenderer:
 
             for cell in row.cells:
                 if cell is not None:
-                    print(f"AAAAAAAAAAAAAAAAA: {cell.text}")
                     self.add_text_line(text=cell.text, new_line=False, text_style=cell.text_style)
                     row_index = rows.index(row)
                     column_index = row.cells.index(cell)

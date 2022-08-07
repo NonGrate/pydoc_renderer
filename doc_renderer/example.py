@@ -13,6 +13,23 @@ def example_doc_renderer(credentials: Credentials):
     renderer.add_text_line(text="PlainText0")
 
     renderer.add_text_line(
+        text="FontFamily",
+        text_style=ParagraphTextStyle(font_family="Roboto"),
+    )
+    renderer.add_text_line(
+        text="FontFamily",
+        text_style=ParagraphTextStyle(font_family="Arial"),
+    )
+    renderer.add_text_line(
+        text="FontFamily",
+        text_style=ParagraphTextStyle(font_family="Times New Roman"),
+    )
+    renderer.add_text_line(
+        text="FontFamily",
+        text_style=ParagraphTextStyle(font_family="Sans"),
+    )
+
+    renderer.add_text_line(
         text="StyledPlainText",
         text_style=ParagraphTextStyle(
             font_size=8,

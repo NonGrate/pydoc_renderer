@@ -25,21 +25,25 @@ class ParagraphTextStyle:
     font_size: int = None
     font_color: Color = None
     background_color: Color = None
+    font_family: str = None
 
     def __init__(
             self,
             font_size: int = None,
             font_color: Color = None,
             background_color: Color = None,
-            style: ParagraphTextStyleEnum = ParagraphTextStyleEnum.NORMAL_TEXT,
             decorations: list[ParagraphTextDecorationEnum] = None,
+            style: ParagraphTextStyleEnum = ParagraphTextStyleEnum.NORMAL_TEXT,
+            font_family: str = None
     ):
         self.style = style
         self.decorations = decorations or []
         self.font_size = font_size
         self.font_color = font_color
         self.background_color = background_color
+        self.font_family = font_family
 
     def __str__(self) -> str:
         return f'ParagraphTextStyle(style: {self.style}, decorations: {self.decorations}, ' \
-               f'fontSize: {self.font_size}, fontColor: {self.font_color}, backgroundColor: {self.background_color}) '
+               f'font_size: {self.font_size}, font_color: {self.font_color}, ' \
+               f'background_color: {self.background_color}), font_family: {self.font_family} '
