@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='pydoc_renderer',
-    version='0.1',
+    version='0.1.1',
     packages=['doc_renderer'],
     url='',
     license='',
