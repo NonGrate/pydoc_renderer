@@ -47,7 +47,12 @@ class DocRenderer:
         print(f"[{self.current_request()}] Adding a [{text}] text at location: {self.location}")
         print(f"[{self.current_request()}] Text has new line at the end: {new_line}")
 
-        new_location = self.location + len(text) + (1 if new_line else 0)
+        new_location = self.location + len(text.replace("\t", "").replace("\n", "")) + (1 if new_line else 0)
+        if "\t" in text:
+            count = text.count("\t")
+            print(f"Nesting level: {str(count)}")
+            new_location += count
+
         self.objects[text] = (self.location, new_location)
         print(f"[{self.current_request()}] Adding an object with indices: {self.location} - {new_location}")
         self.location = new_location
@@ -60,19 +65,39 @@ class DocRenderer:
             self.set_text_style(text_style=text_style, tag=text)
 
     def add_list(self, lines: list[str], text_style: ParagraphTextStyle = None):
-        """Add unordered list """
+        """Add ordered list """
+        lines = list(map(lambda line: line + ("\n" * (line.count("\t"))), lines))
         print(f"[{self.current_request()}] Adding {lines} to the document")
         for line in lines:
             self.add_text_line(line, text_style)
-            self.unprocessed_requests.append({
-                'createParagraphBullets': {
-                    'range': {
-                        'startIndex': self.objects[line][0],
-                        'endIndex': self.objects[line][1],
-                    },
-                    'bulletPreset': 'BULLET_DISC_CIRCLE_SQUARE',
-                }
-            })
+
+        self.unprocessed_requests.append({
+            'createParagraphBullets': {
+                'range': {
+                    'startIndex': self.objects[lines[0]][0],
+                    'endIndex': self.objects[lines[-1]][1],
+                },
+                'bulletPreset': 'NUMBERED_DECIMAL_ALPHA_ROMAN',
+            }
+        })
+        print(f"[{self.current_request()}] Setting a bullet style to the {lines}")
+
+    def add_unordered_list(self, lines: list[str], text_style: ParagraphTextStyle = None):
+        """Add unordered list """
+        lines = list(map(lambda line: line + ("\n" * (line.count("\t"))), lines))
+        print(f"[{self.current_request()}] Adding {lines} to the document")
+        for line in lines:
+            self.add_text_line(line, text_style)
+
+        self.unprocessed_requests.append({
+            'createParagraphBullets': {
+                'range': {
+                    'startIndex': self.objects[lines[0]][0],
+                    'endIndex': self.objects[lines[-1]][1],
+                },
+                'bulletPreset': 'BULLET_DISC_CIRCLE_SQUARE',
+            }
+        })
         print(f"[{self.current_request()}] Setting a bullet style to the {lines}")
 
     def set_text_style(self, text_style: ParagraphTextStyle, tag: str):
@@ -278,6 +303,16 @@ class DocRenderer:
         self.location -= 1
         print(f"[{self.current_request()}] Updating location to: {self.location}")
 
+    def add_page_break(self):
+        self.unprocessed_requests.append({
+            "insertPageBreak": {
+                "location": {
+                    "index": self.location,
+                },
+            }
+        })
+        self.location += 2
+
     def current_request(self):
         """Get the index of the current request"""
         return len(self.unprocessed_requests) - 1
@@ -295,3 +330,8 @@ class DocRenderer:
         self.unprocessed_requests.clear()
 
         print(response)
+
+    def get(self):
+        document = self.service.documents().get(documentId=self.document['documentId']).execute()
+        import json
+        print(json.dumps(document['body'], indent=4, sort_keys=False))
