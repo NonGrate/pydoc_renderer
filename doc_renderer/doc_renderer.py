@@ -223,7 +223,7 @@ class DocRenderer:
     def add_table(self, rows: list[Row]):
         """Renders a table"""
         rows_count = len(rows)
-        columns_count = max(map(lambda row: len(row.cells), rows))
+        columns_count = max(map(lambda row: len(row.cells), rows)) if len(rows) else 0
         print(f"[{self.current_request()}] Adding a new table to the document at {self.location} location")
         print(f"[{self.current_request()}] Table has {rows_count} rows and {columns_count} columns")
         self.unprocessed_requests.append({
