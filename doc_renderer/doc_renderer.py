@@ -33,6 +33,7 @@ class DocRenderer:
         print("New document created")
 
         print(self.document)
+        return self.document
 
     def add_text_line(self, text: str, text_style: ParagraphTextStyle = None, new_line: bool = True):
         """Add text line"""
